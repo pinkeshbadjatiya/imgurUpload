@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Geberate Random FileName
+# Check if '/' is there at the end of both the variables
+DIR="/home/grim/Pictures/imgur_uploads/"      # Directory where all the images will be saved
+EXECUTABLE_LOC="/home/grim/bin/"              # Directory where the executables will be stored.
+
+NAME=`zenity --entry --title="ImgurUpload" --text="Enter the filename to be used for saving, (without .png). Leave blank for a random one."`
+if [ "$NAME" == "" ]
+then
+  NAME=$(cat /dev/urandom | tr -cd 'a-f0-9' | head -c 10)
+fi
+
+JUST_FILE_NAME="$NAME.png"
+NAME="$DIR$NAME.png"
+
+gnome-screenshot -a -f $NAME
+
+sleep 2
+LINK=$(python ${EXECUTABLE_LOC}_imgur_upload.py $NAME)
+echo -e "$JUST_FILE_NAME\t$LINK" >> "${DIR}upload_links.txt"
+
+exit 0
